@@ -84,14 +84,9 @@
             </label>
         </form>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
     <script>
         const number = document.getElementById("number").innerHTML.slice(0,2)
-
-        $("circle").css("stroke-dashoffset", (472 - 472 * 0.01 * number))
-        // document.getElementById("circle").style.setProperty("--value", parseInt(number))
+        document.getElementById("circle").style.setProperty("--value", parseInt(number))
                 
         document.getElementById("btn").onclick = ()=>{
             let checkBox = document.getElementById("btn")
@@ -102,9 +97,6 @@
             else document.getElementById("pumpStatus").innerHTML = "Pump Disabled"
 
         }
-
-
-
         
 
     </script>

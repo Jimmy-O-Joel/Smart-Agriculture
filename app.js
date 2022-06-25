@@ -27,7 +27,6 @@ const moisture = new Moisture({
 
 //moisture.save()
 
-
 app.get("/", function (req, res) {
     Moisture.find(function (err, moistures) {
         if (err) {
