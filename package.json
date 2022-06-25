@@ -16,6 +16,7 @@
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "mongoose": "^6.4.0",
+    "pusher": "^5.1.0-beta",
     "serialport": "^9.0.1"
   }
 }
