@@ -70,7 +70,6 @@ circle{
     stroke: url(#GradientColor);
     stroke-width: 20px;
     stroke-dasharray: 472;
-    stroke-dashoffset: calc(472 - 472*0.01*var(--value));
 }
 
 svg{
