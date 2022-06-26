@@ -8,6 +8,7 @@ const app = express()
 app.set("view engine", "ejs")
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
 
 //set public folder
 app.use(express.static("public"))
@@ -23,10 +24,10 @@ const pusher = new Pusher({
 });
 
 const db = mongoose.connection;
-db.once("open", ()=>{
+db.once("open",async ()=>{
     const moistureCollection = db.collection("moistures")
-    const changeStream = moistureCollection.watch()
-    changeStream.on("change", (change)=>{
+    const changeStream1 = moistureCollection.watch()
+    changeStream1.on("change", async (change)=>{
         if (change.operationType === "insert") {
             const moisture = change.fullDocument
             pusher.trigger("newValue", "newValue", moisture.value)
@@ -39,7 +40,12 @@ const moistureSchema = new mongoose.Schema({
     value: Number
 })
 
+const pumpSchema = new mongoose.Schema({
+    pumpState: Boolean
+})
+
 const Moisture = mongoose.model("Moisture", moistureSchema)
+const Pump = mongoose.model("Pump", pumpSchema)
 
 const moisture = new Moisture({
     value: 20
@@ -47,7 +53,23 @@ const moisture = new Moisture({
 
 //moisture.save()
 
-app.get("/", function (req, res) {
+app.post("/switch", async (req, res)=>{
+    const pumpState = req.body
+    console.log(pumpState)
+
+    Pump.deleteMany({}, async (err)=>{
+        if (err) {
+            console.log(err)
+        } else {
+            console.log('success');
+        }
+    }
+    );
+    const pump = new Pump(pumpState)
+    pump.save()
+})
+
+app.get("/", (req, res)=>{
     Moisture.find((err, moistures)=>{
         if (err) {
             console.log(err)
@@ -73,6 +95,6 @@ if (port == null || port == "") {
     port = 3000
 }
 
-app.listen(port, ()=>{
+app.listen(port, async()=>{
     console.log(`Server started successfully on port ${port}`)
 })
