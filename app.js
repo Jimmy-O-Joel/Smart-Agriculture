@@ -1,7 +1,11 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
-const Pusher = require("pusher");
+const Pusher = require("pusher")
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const app = express()
 
@@ -13,7 +17,7 @@ app.use(express.json())
 //set public folder
 app.use(express.static("public"))
 
-mongoose.connect("mongodb+srv://admin-jimmy:SAWA12120@cluster0.hrd38.mongodb.net/SmartAgriculture")
+mongoose.connect(process.env.MONGO_DB_SERVER)
 
 const pusher = new Pusher({
   appId: "1428509",
@@ -43,6 +47,7 @@ const moistureSchema = new mongoose.Schema({
 const pumpSchema = new mongoose.Schema({
     pumpState: Boolean
 })
+
 
 const Moisture = mongoose.model("Moisture", moistureSchema)
 const Pump = mongoose.model("Pump", pumpSchema)
@@ -84,16 +89,23 @@ app.get("/", (req, res)=>{
             } else {
                 moistureComment = "Very Good"
             }
-            res.render("index", { moisture: getMoisture, comment: moistureComment })
+            Pump.find((err, pump)=>{
+                if (err){
+                    console.log(err)
+                }else{
+                    console.log(typeof(pump[0].pumpState))
+                }
+                res.render("index", { moisture: getMoisture, comment: moistureComment, pump: pump[0].pumpState})
+            })
+            
+            
         }
     })
+    
 
 })
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-    port = 3000
-}
+let port = process.env.PORT || 3000
 
 app.listen(port, async()=>{
     console.log(`Server started successfully on port ${port}`)

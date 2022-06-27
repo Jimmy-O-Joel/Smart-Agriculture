@@ -79,7 +79,7 @@
         <div class="pump"><b id="pumpStatus">Pump Disabled</b></div>
         <form action="/switch" method="post">
             <label class="switch">
-                <input type="checkbox" class="checkbox" id="btn" >
+                <input type="checkbox" class="checkbox" id="btn">
                 <span class="slider round"></span>
             </label>
         </form>
@@ -115,22 +115,16 @@
         channel.bind('newValue', async (data)=>{
  
             if (await data < 10 && document.querySelector('input[type="checkbox"]').checked == false) {
-                document.querySelector('input[type="checkbox"]').checked = true
-                document.getElementById("pumpComment").innerHTML = "Extremely Low"
-                document.getElementById("pumpStatus").innerHTML = "Pump Activated"
+                moistureAction(true, "Extremely Low", "Pump Activated")
                 pumpStatus(true)
             } else if (await data < 30 && document.querySelector('input[type="checkbox"]').checked == true) {
-                document.querySelector('input[type="checkbox"]').checked = false
-                document.getElementById("pumpComment").innerHTML = "Just Fine"
-                document.getElementById("pumpStatus").innerHTML = "Pump Disabled"
+                moistureAction(false, "Just Fine", "Pump Disabled")
                 pumpStatus(false)
             } else {
-                document.querySelector('input[type="checkbox"]').checked = false
-                document.getElementById("pumpComment").innerHTML = "Very Good"
-                document.getElementById("pumpStatus").innerHTML = "Pump Disabled"
+                moistureAction(false, "Very Good", "Pump Disabled")
                 pumpStatus(false)
             }
-        
+
             
             document.getElementById("number").innerHTML = `${data}%`
             $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * data)))
@@ -156,13 +150,20 @@
             }
 
             let fetchRes = await fetch(
-                "http://localhost:3000/switch",
+                "http://enigmatic-sierra-38351.herokuapp.com//switch",
                 options);
             fetchRes.then(res =>
                 res.json()).then(d => {
                     console.log(d)
                 })
         }
+
+        const moistureAction = async(btnState, moistureComment, pumpState)=>{
+                document.querySelector('input[type="checkbox"]').checked = btnState
+                document.getElementById("pumpComment").innerHTML = moistureComment
+                document.getElementById("pumpStatus").innerHTML = pumpState
+            }
+        
 
         
 
