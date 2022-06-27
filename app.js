@@ -17,7 +17,7 @@ app.use(express.json())
 //set public folder
 app.use(express.static("public"))
 
-mongoose.connect(process.env.MONGO_DB_SERVER)
+mongoose.connect("mongodb+srv://admin-jimmy:SAWA12120@cluster0.hrd38.mongodb.net/SmartAgriculture")
 
 const pusher = new Pusher({
   appId: "1428509",
