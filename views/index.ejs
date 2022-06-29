@@ -79,6 +79,7 @@
         <div class="pump"><b id="pumpStatus">Pump Disabled</b></div>
         <form action="/switch" method="post">
             <label class="switch">
+                <div class="hidden"></div>
                 <input type="checkbox" class="checkbox" id="btn">
                 <span class="slider round"></span>
             </label>
@@ -88,13 +89,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
+
         const number = document.getElementById("number").innerHTML.slice(0,2)
         
-        $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * number)))        
-                        
+        $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * number)))  
+        
         document.getElementById("btn").onclick = async ()=>{
             let checkBox = document.getElementById("btn")
-
+            initPump()
             if (checkBox.checked == true) {
                 document.getElementById("pumpStatus").innerHTML = "Pump Activated"
                 pumpStatus(true)
@@ -114,10 +116,10 @@
         var channel = pusher.subscribe('newValue');
         channel.bind('newValue', async (data)=>{
  
-            if (await data < 10 && document.querySelector('input[type="checkbox"]').checked == false) {
+            if (await data <= 10 && document.querySelector('input[type="checkbox"]').checked == false) {
                 moistureAction(true, "Extremely Low", "Pump Activated")
                 pumpStatus(true)
-            } else if (await data < 30 && document.querySelector('input[type="checkbox"]').checked == true) {
+            } else if (await data < 30 && await data > 10 && document.querySelector('input[type="checkbox"]').checked == true) {
                 moistureAction(false, "Just Fine", "Pump Disabled")
                 pumpStatus(false)
             } else {
@@ -150,7 +152,7 @@
             }
 
             let fetchRes = await fetch(
-                "http://enigmatic-sierra-38351.herokuapp.com//switch",
+                "/switch",
                 options);
             fetchRes.then(res =>
                 res.json()).then(d => {
@@ -163,6 +165,22 @@
                 document.getElementById("pumpComment").innerHTML = moistureComment
                 document.getElementById("pumpStatus").innerHTML = pumpState
             }
+
+        const initPump = async ()=>{
+            const response = await fetch("/pump",
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type':
+                        'application/json;charset=utf-8'
+                }
+            })
+            .then(res =>res.json())
+            .then(d => {console.log(d.pumpState)})
+            // const data = res.json()
+            // console.log(data)
+
+        }
         
 
         
