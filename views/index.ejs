@@ -79,7 +79,6 @@
         <div class="pump"><b id="pumpStatus">Pump Disabled</b></div>
         <form action="/switch" method="post">
             <label class="switch">
-                <div class="hidden"></div>
                 <input type="checkbox" class="checkbox" id="btn">
                 <span class="slider round"></span>
             </label>
@@ -89,14 +88,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
-
         const number = document.getElementById("number").innerHTML.slice(0,2)
         
-        $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * number)))  
+        $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * number))) 
         
         document.getElementById("btn").onclick = async ()=>{
             let checkBox = document.getElementById("btn")
-            initPump()
             if (checkBox.checked == true) {
                 document.getElementById("pumpStatus").innerHTML = "Pump Activated"
                 pumpStatus(true)
@@ -176,11 +173,15 @@
                 }
             })
             .then(res =>res.json())
-            .then(d => {console.log(d.pumpState)})
-            // const data = res.json()
-            // console.log(data)
+            .then(d => {console.log(d.pumpState)
+                document.getElementById("btn").checked = d.pumpState
+                if (d.pumpState){
+                    document.getElementById("pumpStatus").innerHTML = "Pump Activated"
+                }
+            })
 
         }
+        initPump()
         
 
         

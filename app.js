@@ -103,7 +103,7 @@ app.get("/pump", (req, res)=>{
         if (err){
             console.log(err)
         }else{
-            res.status(200).json(pump[0])
+            res.json(pump[0])
         }
     })
 })
