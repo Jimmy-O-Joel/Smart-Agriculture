@@ -88,7 +88,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
-        const number = document.getElementById("number").innerHTML.slice(0,2)
+        let number = document.getElementById("number").innerHTML
+
+        if (number.length == 4) number = number.slice(0,3)
+        else if (number.length == 3) number = number.slice(0,2)
+        else number = number.slice(0,1)
         
         $("circle").css("stroke-dashoffset", (472 - (472 * 0.01 * number))) 
         
@@ -116,10 +120,10 @@
             if (await data <= 10 && document.querySelector('input[type="checkbox"]').checked == false) {
                 moistureAction(true, "Extremely Low", "Pump Activated")
                 pumpStatus(true)
-            } else if (await data < 30 && await data > 10 && document.querySelector('input[type="checkbox"]').checked == true) {
+            } else if (await data <=30 && await data > 10 && document.querySelector('input[type="checkbox"]').checked == true) {
                 moistureAction(false, "Just Fine", "Pump Disabled")
                 pumpStatus(false)
-            } else {
+            } else if (await data > 30 && document.querySelector('input[type="checkbox"]').checked == true){
                 moistureAction(false, "Very Good", "Pump Disabled")
                 pumpStatus(false)
             }
